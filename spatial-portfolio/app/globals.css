@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --vh: 1vh;
+}
+
+html,
+body {
+  overscroll-behavior: none;
+}
+
+/* No page scroll anywhere: the world is navigated by camera moves. Height
+   comes from the JS-maintained --vh. Background transitions over 1s so
+   palette-driven tints (open projects) fade instead of snapping. */
+body {
+  background: #ffffff;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+  height: calc(100 * var(--vh));
+  transition: background-color 1s;
+}
+
+*:focus-visible {
+  outline: 3px solid red;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

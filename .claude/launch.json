@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "spatial-portfolio",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "/Users/tushitkumar/portfolio-site/spatial-portfolio",
+        "run",
+        "dev",
+        "--",
+        "-p",
+        "3123"
+      ],
+      "port": 3123
+    }
+  ]
+}
