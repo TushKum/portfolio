@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { type CursorKind, useCursorHover } from '@/store/cursor';
 
 interface InteractiveAreaProps {
@@ -29,6 +30,13 @@ export default function InteractiveArea({
   debug = false,
 }: InteractiveAreaProps) {
   const { startHover, stopHover } = useCursorHover(cursor);
+
+  // Hit areas often unmount as a RESULT of being clicked (power-on, spill…),
+  // which skips pointerleave — release the parent's hover state on unmount or
+  // it stays stuck at hover scale/tilt forever.
+  const hoverChangeRef = useRef(onHoverChange);
+  hoverChangeRef.current = onHoverChange;
+  useEffect(() => () => hoverChangeRef.current?.(false), []);
   const enter = () => {
     startHover();
     onHoverChange?.(true);

@@ -8,7 +8,14 @@ import Scribble from '@/components/Scribble';
 import InteractiveArea from '@/components/InteractiveArea';
 import CodeRings from '@/components/CodeRings';
 import Terminal from '@/components/terminal/Terminal';
-import { COMPUTER_BODY, COMPUTER_FILL, COMPUTER_KEYBOARD, COMPUTER_SCREEN } from '@/lib/lines';
+import {
+  LAPTOP_BASE,
+  LAPTOP_BOLT_A,
+  LAPTOP_BOLT_B,
+  LAPTOP_KEYS,
+  LAPTOP_LID,
+  LAPTOP_SCREEN,
+} from '@/lib/lines';
 import { colors } from '@/lib/colors';
 import { HAND_FONT } from '@/lib/typography';
 import { useHasMouse, useTrueAfterDelay } from '@/lib/hooks';
@@ -74,25 +81,16 @@ export default function Computer() {
       scale={groupSpring.scale}
       rotation={groupSpring.rotation as unknown as [number, number, number]}
     >
+      {/* All body parts share size 4 / position [-1, -0.14, z] so they align;
+          the screen center of the [0,1] frame lands at world [-1, 0.7], where
+          the terminal mounts. */}
       <Scribble
-        points={COMPUTER_FILL}
-        size={5}
-        position={[-1, 0.05, 1.7]}
-        lineWidth={1}
-        color={colors.yellow}
-        visible={fillVisible}
-        curved
-        closed
-        scale={partScale}
-      />
-      <Scribble
-        points={COMPUTER_SCREEN}
-        size={3.3}
-        position={[-1, 0.7, 2.1]}
-        rotation={[0, 0, Math.PI / 40]}
-        lineWidth={0.6}
-        color={on ? colors.blue : colors.screenOff}
-        visible={screenVisible}
+        points={LAPTOP_BASE}
+        size={4}
+        position={[-1, -0.14, 1.95]}
+        lineWidth={0.05}
+        color={colors.black}
+        visible={bodyVisible}
         curved
         closed
         depthTest={false}
@@ -100,44 +98,77 @@ export default function Computer() {
         scale={partScale}
       />
       <Scribble
-        points={COMPUTER_BODY}
-        size={4.9}
-        position={[-1, 0, 2.3]}
-        rotation={[0, 0, Math.PI / 40]}
-        lineWidth={0.02}
-        color={colors.violet}
-        visible={bodyVisible}
+        points={LAPTOP_SCREEN}
+        size={4}
+        position={[-1, -0.14, 2.0]}
+        lineWidth={0.7}
+        color={on ? colors.blue : colors.yellow}
+        visible={fillVisible}
         curved
-        closed
         depthTest={false}
         renderOrder={2}
         scale={partScale}
       />
       <Scribble
-        points={COMPUTER_KEYBOARD}
-        size={4.1}
-        position={[-0.7, -1.2, 2.5]}
-        lineWidth={0.02}
-        color={colors.violet}
-        visible={bodyVisible}
+        points={LAPTOP_LID}
+        size={4}
+        position={[-1, -0.14, 2.05]}
+        lineWidth={0.05}
+        color={colors.black}
+        visible={screenVisible}
         curved
         closed
         depthTest={false}
-        renderOrder={2}
+        renderOrder={3}
+        scale={partScale}
+      />
+      <Scribble
+        points={LAPTOP_KEYS}
+        size={4}
+        position={[-1, -0.14, 2.06]}
+        lineWidth={0.02}
+        color={colors.black}
+        visible={bodyVisible}
+        depthTest={false}
+        renderOrder={4}
+        scale={partScale}
+      />
+      <Scribble
+        points={LAPTOP_BOLT_A}
+        size={1.3}
+        position={[1.15, 1.35, 2.1]}
+        lineWidth={0.14}
+        color={colors.yellow}
+        visible={fillVisible}
+        curved
+        depthTest={false}
+        renderOrder={5}
+        scale={partScale}
+      />
+      <Scribble
+        points={LAPTOP_BOLT_B}
+        size={1.2}
+        position={[-2.7, -1.15, 2.1]}
+        lineWidth={0.14}
+        color={colors.yellow}
+        visible={fillVisible}
+        curved
+        depthTest={false}
+        renderOrder={5}
         scale={partScale}
       />
       {canTurnOn && !on && !turningOn && (
         <>
           <Text
-            position={[-1, 0.7, 2.15]}
+            position={[-1, 0.68, 2.15]}
             rotation={[0, 0, Math.PI / 40]}
-            fontSize={0.5}
+            fontSize={0.42}
             font={HAND_FONT}
-            color="#888888"
+            color={colors.black}
             anchorX="center"
             anchorY="middle"
             material={labelMaterial}
-            renderOrder={3}
+            renderOrder={6}
           >
             {hasMouse === false ? 'Tap to start' : 'Click to start'}
           </Text>

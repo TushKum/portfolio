@@ -14,6 +14,20 @@
         "3123"
       ],
       "port": 3123
+    },
+    {
+      "name": "zine-portfolio",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "/Users/tushitkumar/portfolio-site/zine-portfolio",
+        "run",
+        "dev",
+        "--",
+        "-p",
+        "3124"
+      ],
+      "port": 3124
     }
   ]
 }

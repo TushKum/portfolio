@@ -104,11 +104,17 @@ interface ShapeOptions {
   amp?: number;
   seed?: number;
   n?: number;
+  /** Corner-rounding passes. 3 = soft/blobby, 1 = crisp (keeps flat edges &
+   * defined corners, e.g. a keyboard deck). */
+  iters?: number;
 }
 
 /** Rough anchor polygon → smooth hand-drawn stroke. */
-function shape(anchors: Pt[], { closed = true, amp = 0.006, seed = 1, n = 200 }: ShapeOptions = {}): Coord[] {
-  return toCoords(wobble(resample(chaikin(anchors, 3, closed), n, closed), amp, seed, closed));
+function shape(
+  anchors: Pt[],
+  { closed = true, amp = 0.006, seed = 1, n = 200, iters = 3 }: ShapeOptions = {}
+): Coord[] {
+  return toCoords(wobble(resample(chaikin(anchors, iters, closed), n, closed), amp, seed, closed));
 }
 
 /** Continuous crayon fill: y climbs steadily while x sweeps on a cosine, so
@@ -179,57 +185,90 @@ export function circle(seed: number, amp = 0.012): Coord[] {
   return ellipse(0.48, 0.48, seed, amp);
 }
 
-// ---- The computer: a chunky CRT monitor + keyboard in four strokes.
-// Anchor lists include edge midpoints so chaikin rounds the corners without
-// collapsing the flat edges.
+// ---- The laptop (start-scene computer). A cleaner, more-defined open laptop:
+// a bold flat-yellow screen hinged to a perspective keyboard deck with key
+// rows, plus lightning-bolt accents. All the body parts share one [0,1] frame
+// so they line up when given the same size + position. Screen center sits at
+// frame (0.5, 0.71) so it maps to the terminal's world anchor.
 
-export const COMPUTER_SCREEN: Coord[] = shape(
+// Screen bezel — a rounded rectangle standing up (the open lid).
+export const LAPTOP_LID: Coord[] = shape(
   [
-    [0.16, 0.4],
-    [0.5, 0.41],
-    [0.84, 0.42],
-    [0.855, 0.64],
-    [0.86, 0.86],
-    [0.5, 0.87],
-    [0.15, 0.88],
-    [0.155, 0.64],
+    [0.14, 0.46],
+    [0.5, 0.45],
+    [0.86, 0.46],
+    [0.88, 0.71],
+    [0.86, 0.96],
+    [0.5, 0.97],
+    [0.14, 0.96],
+    [0.12, 0.71],
   ],
-  { seed: 11, amp: 0.005 }
+  { seed: 11, amp: 0.004 }
 );
 
-export const COMPUTER_BODY: Coord[] = shape(
+// Bold flat-yellow display fill, inset within the bezel.
+export const LAPTOP_SCREEN: Coord[] = serpentine(11, 0.54, 0.9, () => 0.28, () => 0.5, 12);
+
+// Keyboard deck — a shallow trapezoid receding in perspective (narrow at the
+// hinge, wide at the front edge). iters:1 keeps the corners crisp so it reads
+// as a deck, not an oval.
+export const LAPTOP_BASE: Coord[] = shape(
   [
-    [0.08, 0.3],
-    [0.5, 0.29],
-    [0.9, 0.28],
-    [0.92, 0.6],
-    [0.93, 0.93],
-    [0.5, 0.95],
-    [0.07, 0.94],
-    [0.06, 0.62],
+    [0.22, 0.52],
+    [0.5, 0.52],
+    [0.78, 0.52],
+    [0.97, 0.28],
+    [0.98, 0.14],
+    [0.5, 0.08],
+    [0.02, 0.14],
+    [0.03, 0.28],
   ],
-  { seed: 22, amp: 0.006 }
+  { seed: 22, amp: 0.005, iters: 1 }
 );
 
-export const COMPUTER_KEYBOARD: Coord[] = shape(
+// Key rows drawn as one boustrophedon snake across the deck, resampled but not
+// corner-rounded so the keyboard reads as defined. Each row's width follows the
+// trapezoid so the keys sit inside the deck.
+export const LAPTOP_KEYS: Coord[] = (() => {
+  const rows = 5;
+  const yTop = 0.47;
+  const yBottom = 0.16;
+  const anchors: Pt[] = [];
+  for (let r = 0; r < rows; r += 1) {
+    const v = r / (rows - 1);
+    const y = yTop + (yBottom - yTop) * v;
+    const half = 0.22 + 0.2 * v; // widens toward the front edge
+    const [xL, xR] = [0.5 - half, 0.5 + half];
+    if (r % 2 === 0) anchors.push([xL, y], [xR, y]);
+    else anchors.push([xR, y], [xL, y]);
+  }
+  return toCoords(resample(anchors, 200, false));
+})();
+
+// Lightning accents — chaikin(1) keeps the zigzag sharp, unlike the smooth
+// body strokes.
+function bolt(anchors: Pt[], seed: number): Coord[] {
+  return toCoords(wobble(resample(chaikin(anchors, 1, false), 90, false), 0.004, seed, false));
+}
+
+export const LAPTOP_BOLT_A: Coord[] = bolt(
   [
-    [0.05, 0.32],
-    [0.5, 0.3],
-    [0.95, 0.3],
-    [0.8, 0.6],
-    [0.5, 0.62],
-    [0.2, 0.62],
+    [0.15, 0.98],
+    [0.62, 0.62],
+    [0.4, 0.56],
+    [0.9, 0.02],
   ],
-  { seed: 33, amp: 0.006 }
+  31
 );
 
-export const COMPUTER_FILL: Coord[] = serpentine(
-  7,
-  0.31,
-  0.91,
-  (v) => 0.36 + 0.05 * Math.sin(v * Math.PI),
-  () => 0.5,
-  44
+export const LAPTOP_BOLT_B: Coord[] = bolt(
+  [
+    [0.1, 0.92],
+    [0.52, 0.58],
+    [0.34, 0.52],
+    [0.86, 0.06],
+  ],
+  32
 );
 
 // ---- The coffee mug: one flowing outline (with handle loop), a serpentine
@@ -268,6 +307,78 @@ export const CUP_FILL: Coord[] = serpentine(
 );
 
 export const CUP_LIQUID: Coord[] = ellipse(0.44, 0.15, 77);
+
+// The puddle that spreads from the tipped cup's mouth: a serpentine body
+// (fat perimeter strokes leave a hollow middle — sweeps read solid) plus an
+// irregular outline ring.
+export const SPILL_FILL: Coord[] = serpentine(
+  4,
+  0.32,
+  0.7,
+  (v) => 0.06 + 0.36 * Math.sqrt(Math.sin(Math.PI * v)),
+  () => 0.5,
+  98
+);
+
+export const SPILL_PUDDLE: Coord[] = shape(
+  [
+    [0.05, 0.55],
+    [0.25, 0.7],
+    [0.5, 0.72],
+    [0.75, 0.66],
+    [0.95, 0.5],
+    [0.8, 0.35],
+    [0.6, 0.28],
+    [0.35, 0.3],
+    [0.12, 0.38],
+  ],
+  { seed: 99, amp: 0.008 }
+);
+
+// ---- The notebook (a spiral-bound pad reading "BLOG COMING SOON").
+// Rounded page + a coil binding down the left spine.
+
+export const NOTEBOOK_OUTLINE: Coord[] = shape(
+  [
+    [0.2, 0.85],
+    [0.2, 0.5],
+    [0.21, 0.15],
+    [0.5, 0.13],
+    [0.82, 0.15],
+    [0.83, 0.5],
+    [0.82, 0.85],
+    [0.5, 0.87],
+  ],
+  { seed: 88, amp: 0.006 }
+);
+
+export const NOTEBOOK_FILL: Coord[] = serpentine(
+  6,
+  0.17,
+  0.83,
+  () => 0.28,
+  () => 0.51,
+  91
+);
+
+/** A spiral binding: a helix projected to 2D — the line traces a small ellipse
+ * left-right of the spine while descending, so it reads as coils. */
+export const NOTEBOOK_SPIRAL: Coord[] = (() => {
+  const loops = 6;
+  const spineX = 0.2;
+  const yTop = 0.82;
+  const yBottom = 0.18;
+  const rx = 0.07;
+  const ry = 0.03;
+  const n = 200;
+  const pts: Pt[] = [];
+  for (let i = 0; i < n; i += 1) {
+    const t = i / (n - 1);
+    const a = t * loops * Math.PI * 2;
+    pts.push([spineX + rx * Math.cos(a), yTop + (yBottom - yTop) * t + ry * Math.sin(a)]);
+  }
+  return toCoords(pts);
+})();
 
 // ---- Loose squiggles reused by the background and project title previews.
 

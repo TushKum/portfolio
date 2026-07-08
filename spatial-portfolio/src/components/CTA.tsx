@@ -26,7 +26,7 @@ export default function CTA() {
   return (
     <>
       <a
-        href="mailto:hello@johndoe.dev"
+        href="mailto:tushit.jalan@gmail.com"
         onMouseEnter={() => {
           setHovered(true);
           startHover();
@@ -40,7 +40,7 @@ export default function CTA() {
         } ${hovered ? 'scale-125' : ''}`}
         style={{ background: bg, color: text }}
       >
-        hello@johndoe.dev
+        tushit.jalan@gmail.com
       </a>
       <nav
         aria-label="Social"

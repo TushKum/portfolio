@@ -6,7 +6,7 @@ import { Text } from '@react-three/drei';
 import { animated, config, useSpring } from '@react-spring/three';
 import Scribble from '@/components/Scribble';
 import InteractiveArea from '@/components/InteractiveArea';
-import { CUP_FILL, CUP_LIQUID, CUP_OUTLINE } from '@/lib/lines';
+import { CUP_FILL, CUP_LIQUID, CUP_OUTLINE, SPILL_FILL, SPILL_PUDDLE } from '@/lib/lines';
 import { colors } from '@/lib/colors';
 import { HAND_FONT } from '@/lib/typography';
 import { useAspect, useTrueAfterDelay } from '@/lib/hooks';
@@ -40,6 +40,7 @@ export default function CoffeeCup() {
     position: spilled ? spillPosition : menuPosition,
     rotationZ:
       (spilled ? 2 + Math.PI * 2 : 0) + (hovered ? (spilled ? -1 : 1) * (Math.PI / 6) * 0.5 : 0),
+    scale: hovered ? 1.1 : 1,
     config: config.wobbly,
   });
 
@@ -47,7 +48,7 @@ export default function CoffeeCup() {
 
   return (
     <animated.group position={spring.position as unknown as [number, number, number]}>
-      <animated.group rotation-z={spring.rotationZ} scale={hovered ? 1.1 : 1}>
+      <animated.group rotation-z={spring.rotationZ} scale={spring.scale}>
         <Scribble
           points={CUP_OUTLINE}
           size={1.8}
@@ -66,20 +67,43 @@ export default function CoffeeCup() {
           closed
           drawConfig={config.molasses}
         />
-        {!spilled && (
-          <Scribble
-            points={CUP_LIQUID}
-            size={1}
-            position={[0, 0.55, 0.1]}
-            lineWidth={0.15}
-            color={colors.coffeeLight}
-            visible={fillVisible}
-            curved
-            closed
-            nPointsInCurve={200}
-          />
-        )}
+        {/* Stays mounted so it un-draws smoothly when the cup spills instead
+            of popping out of existence. */}
+        <Scribble
+          points={CUP_LIQUID}
+          size={1}
+          position={[0, 0.55, 0.1]}
+          lineWidth={0.15}
+          color={colors.coffeeLight}
+          visible={fillVisible && !spilled}
+          curved
+          closed
+          nPointsInCurve={200}
+        />
       </animated.group>
+      {/* The spilled coffee, pooling below the tipped cup's mouth (the cup
+          settles at ~115°, mouth pointing down-left). Draws in lazily when
+          spilled, un-draws when the cup rights itself. */}
+      <group position={[-0.9, -0.72, -0.1]} scale={[1, 0.55, 1]}>
+        <Scribble
+          points={SPILL_FILL}
+          size={1.6}
+          lineWidth={0.28}
+          color={colors.coffeeLight}
+          visible={fillVisible && spilled}
+          curved
+          drawConfig={config.molasses}
+        />
+        <Scribble
+          points={SPILL_PUDDLE}
+          size={1.7}
+          lineWidth={0.035}
+          color={colors.coffee}
+          visible={fillVisible && spilled}
+          curved
+          closed
+        />
+      </group>
       {show && (
         <Text
           position={[0, -1.5, 0]}

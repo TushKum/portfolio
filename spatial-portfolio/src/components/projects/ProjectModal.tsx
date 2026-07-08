@@ -49,7 +49,7 @@ export default function ProjectModal({ project }: { project: Project }) {
               </p>
             ))}
             <a
-              href="mailto:hello@johndoe.dev"
+              href="mailto:tushit.jalan@gmail.com"
               className="mt-8 mb-10 inline-block border-2 border-white px-5 py-3 uppercase transition-colors hover:bg-white hover:text-black"
             >
               Want one of these? Say hi →

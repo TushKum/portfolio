@@ -180,7 +180,7 @@ export default function SkillPaintWindow({
                 </TerminalWindowButton>
                 <TerminalWindowButton
                   delay={350}
-                  href="mailto:hello@johndoe.dev"
+                  href="mailto:tushit.jalan@gmail.com"
                   bgColor={colors.violet}
                   color={colors.white}
                   disabled={!interactive}

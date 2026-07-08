@@ -28,6 +28,7 @@ Everything below assumes you're editing inside `spatial-portfolio/`.
 | Email + social links (pills in the corners) | `src/components/CTA.tsx` |
 | Terminal intro lines ("Hello! I'm…") | `src/components/terminal/Terminal.tsx` |
 | Projects (the ice cubes) | `src/components/projects/data.ts` |
+| The "BLOG COMING SOON" notebook | `src/components/Notebook.tsx` |
 | About windows (mission / portrait / testimonials / skills) | `src/components/terminal/*.tsx` |
 | Colors | `src/lib/colors.ts` **and** `tailwind.config.ts` (keep in sync) |
 | Hand-drawn shapes | `src/lib/lines.ts` |
@@ -45,16 +46,32 @@ Every component reads from those — there are no props threading scene state ar
 
 ## 3. Identity (10 minutes)
 
-1. **Name & metadata** — `app/layout.tsx`: `metadata.title`, `metadata.description`.
-2. **Email** — search the repo for `hello@johndoe.dev` (CTA pill, project modal CTA,
-   skills window CONTACT_ME button) and replace.
-3. **Socials** — `SOCIALS` array in `src/components/CTA.tsx`: real URLs + labels.
-4. **Terminal greeting** — `Terminal.tsx`, the intro `SlideLayer`: two `<Typewriter>` lines and
-   the `ABOUT_JOHN` button label. Note the second line's `delay={800 + 19 * 25 + 100}` —
-   the `19` is the first line's character count, so typing chains naturally. Update it when
-   you change the text.
-5. **Cursor labels** — `LABELS` in `CustomCursor.tsx` ("turn on", "spill it", "peek"…).
-   These little verbs carry a lot of personality; write your own.
+The site is already set to **Tushit Kumar / Thapar University / tushit.jalan@gmail.com**.
+Here's where each piece lives when you want to tweak it:
+
+1. **Name & metadata** — `app/layout.tsx`: `metadata.title`, `metadata.description`
+   (browser tab + SEO).
+2. **Email** — search the repo for `tushit.jalan@gmail.com` to change it everywhere at once.
+   It appears in 3 places: the CTA pill (`src/components/CTA.tsx`), the project modal's
+   "Say hi" button (`src/components/projects/ProjectModal.tsx`), and the skills window's
+   CONTACT_ME button (`src/components/terminal/SkillPaintWindow.tsx`).
+3. **Socials** — `SOCIALS` array in `src/components/CTA.tsx`. ⚠️ Still generic
+   `github.com` / `twitter.com` / `linkedin.com` — put your real profile URLs here.
+4. **Terminal greeting** — `src/components/terminal/Terminal.tsx`, the intro `SlideLayer`:
+   the two `<Typewriter>` lines ("Hi! I'm Tushit Kumar." / "I design & build for the web.")
+   and the `ABOUT_TUSHIT` button label. Note the second line's `delay={800 + 21 * 25 + 100}` —
+   the `21` is the first line's character count, so the typing chains naturally. Update that
+   number when you change the first line.
+5. **Mission slide** — same file, the `MISSION.TXT` `lines` array (this is where Thapar
+   University is mentioned).
+6. **ASCII portrait** — `src/components/terminal/PortraitWindow.tsx`, the `PORTRAIT` string.
+   Draw your own face, or swap the `<pre>` for a real `<img>`.
+7. **Testimonials** — `src/components/terminal/TestimonialsWindow.tsx` (currently Rubber
+   Duck, Thapar WiFi, Hostel Chai Wala — make them yours).
+8. **Cursor labels** — `LABELS` in `src/components/CustomCursor.tsx` ("turn on", "spill it",
+   "peek"…). These little verbs carry a lot of personality; write your own.
+9. **Code-ring jokes** — the `JOKES` array in `src/components/CodeRings.tsx` (the scrolling
+   code lines that orbit the scene after power-on).
 
 ---
 
@@ -107,6 +124,31 @@ your own doodles.
 - **Add a slide**: add a name to `SlideName`, drop a new `<SlideLayer>` in `Terminal.tsx`
   with an `exit` transform that pushes it fully off (>110% in one axis), and point some
   button's `onClick` at `setSlide('yourslide')`.
+
+---
+
+## 5b. The menu objects (computer, mug, notebook)
+
+The menu scene has three hand-drawn objects, each its own component with art in
+`src/lib/lines.ts`:
+
+- **Computer** (`Computer.tsx`) — an open laptop with a bold flat-yellow screen and
+  lightning-bolt accents; click it to power on and enter the menu. Its art is the `LAPTOP_*`
+  strokes in `lines.ts` (lid, screen fill, keyboard deck, key rows, two bolts); all body
+  parts share one `[0,1]` frame at `size 4, position [-1, -0.14, z]` so they line up, with the
+  screen center landing at world `[-1, 0.7]` where the terminal mounts.
+- **Coffee mug** (`CoffeeCup.tsx`) — the PROJECTS nav; click to spill into the projects room.
+- **Notebook** (`Notebook.tsx`) — a decorative "BLOG COMING SOON" spiral pad, top-right.
+
+To retheme the notebook: change its text (the `'Blog\ncoming\nsoon'` string), its color
+(`colors.violet`), or its position (`[4, 1.3, 2.5]` wide / `[-1.5, 3.8, 1.8]` narrow). To make
+it *do* something — e.g. open a real blog — copy the `<InteractiveArea>` pattern from
+`CoffeeCup.tsx` (give it a real `onClick` and a cursor label) or wrap it to open a URL.
+
+**To add your own fourth object** (a plant, a phone, a cassette deck…): draw it as strokes in
+`lines.ts` (section 8's SVG sampler), clone `Notebook.tsx` as a starting point, and render it
+in `SceneDirector.tsx` next to `<Notebook />`. Give it a menu-scene world position that
+doesn't overlap the others.
 
 ---
 
@@ -206,7 +248,8 @@ impact first:
 
 1. **Replace the drawings with your own** (section 8's SVG sampler). Your hand, your
    objects — this alone transforms the site.
-2. **Swap the central metaphor.** The CRT-computer-as-menu is *his* icon. Yours could be a
+2. **Swap the central metaphor.** The computer-as-menu is *his* icon (this build draws it as a
+   bold laptop). Yours could be a
    game console, a synth, a bookshelf, a fridge with magnets, a garden — anything you can
    draw as 3–5 strokes with a "screen" area for the terminal (`Terminal.tsx` doesn't care
    what it's mounted on; it's just a plane at a position).
@@ -235,6 +278,18 @@ works.
 ---
 
 ## 12. Troubleshooting
+
+- **"Internal Server Error" / HTTP 500 from the dev server** — the `.next` build cache is
+  corrupted. Two known causes: (a) running `npm run build` while `npm run dev` is running
+  (they share the `.next` folder — never do both at once), or (b) renaming/removing an
+  export while the dev server hot-reloads through the broken in-between state. The code is
+  usually fine. Fix:
+
+  ```bash
+  # stop the dev server (Ctrl+C), then:
+  rm -rf .next
+  npm run dev
+  ```
 
 - **White canvas in an embedded/hidden preview** — hidden tabs suspend
   `requestAnimationFrame`, which freezes both R3F and the springs. Open the tab for real;

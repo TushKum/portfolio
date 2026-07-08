@@ -4,6 +4,7 @@ import CameraController from '@/components/CameraController';
 import BackgroundScribbles from '@/components/BackgroundScribbles';
 import Computer from '@/components/Computer';
 import CoffeeCup from '@/components/CoffeeCup';
+import Notebook from '@/components/Notebook';
 import ProjectListing from '@/components/projects/ProjectListing';
 import { useAspect } from '@/lib/hooks';
 import { useSceneStore } from '@/store/scene';
@@ -51,6 +52,7 @@ export default function SceneDirector() {
       <BackgroundScribbles />
       <Computer />
       <CoffeeCup />
+      <Notebook />
       <ProjectListing position={listingPosition} />
     </>
   );

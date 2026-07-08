@@ -11,17 +11,17 @@ const TESTIMONIALS = [
     name: 'Rubber Duck',
     avatar: '🦆',
     quote:
-      'John explained his bug to me for ten minutes. I said nothing. He fixed it himself. Five stars.',
+      'Tushit explained his bug to me for ten minutes. I said nothing. He fixed it himself. Five stars.',
   },
   {
-    name: 'Coffee Machine',
+    name: 'Thapar WiFi',
+    avatar: '📶',
+    quote: 'We have a complicated relationship. He still ships. Grudging respect.',
+  },
+  {
+    name: 'Hostel Chai Wala',
     avatar: '☕',
-    quote: 'Reliable. Visits hourly. Returns the mugs, mostly.',
-  },
-  {
-    name: 'His Mom',
-    avatar: '💐',
-    quote: 'I have no idea what he does, but he seems very busy and I am proud of him.',
+    quote: 'Best customer. Orders at 3am during exam season. Tips in pure gratitude.',
   },
 ];
 

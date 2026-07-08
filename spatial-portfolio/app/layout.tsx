@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'John Doe — Creative Engineer',
+  title: 'Tushit Kumar — Creative Engineer',
   description:
-    'Portfolio of John Doe, a creative engineer bridging design and engineering — a hand-drawn 3D world with a computer in it.',
+    'Portfolio of Tushit Kumar, a developer & designer and CS student at Thapar University — a hand-drawn 3D world with a laptop in it.',
 };
 
 // Roboto Mono is loaded via a plain stylesheet (not next/font) on purpose:

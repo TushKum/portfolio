@@ -89,9 +89,9 @@ export default function Terminal() {
             <div className="flex h-full flex-col justify-between p-[1em] text-[2em] leading-snug">
               <div>
                 <Typewriter delay={800} hideCaretAtEnd>
-                  Hello! I&apos;m John Doe.
+                  Hi! I&apos;m Tushit Kumar.
                 </Typewriter>
-                <Typewriter delay={800 + 19 * 25 + 100}>I build living interfaces.</Typewriter>
+                <Typewriter delay={800 + 21 * 25 + 100}>I design &amp; build for the web.</Typewriter>
               </div>
               <div className="grid place-items-center pb-[0.5em]">
                 <TerminalButton
@@ -102,7 +102,7 @@ export default function Terminal() {
                     setSlide('mission');
                   }}
                 >
-                  ABOUT_JOHN
+                  ABOUT_TUSHIT
                 </TerminalButton>
               </div>
             </div>
@@ -115,9 +115,9 @@ export default function Terminal() {
                 delay={300}
                 interactive={slide === 'mission'}
                 lines={[
-                  'John bridges design and engineering.',
+                  'Tushit Kumar — developer, designer, and CS student at Thapar University.',
                   'He turns wild ideas into precise, living interfaces.',
-                  '(He is also a placeholder person.)',
+                  '(Currently: caffeinated, and probably debugging something.)',
                 ]}
                 button={{ label: 'WHO SAYS SO?', onClick: () => setSlide('testimonials') }}
               />

@@ -11,7 +11,7 @@ const PORTRAIT = String.raw`
   |   \___/   |
    \         /
     '-------'
-   || JOHN ||
+  || TUSHIT ||
 `;
 
 /** Stand-in for a headshot: an ASCII self portrait. */
