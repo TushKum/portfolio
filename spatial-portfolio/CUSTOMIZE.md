@@ -269,11 +269,30 @@ impact first:
 
 ---
 
-## 11. Deploy
+## 11. Deploy (Vercel)
 
-Vercel: import the repo, set the project root to `spatial-portfolio/`, done — it's a static
-prerender with client-side WebGL. Any Node host running `npm run build && npm start` also
-works.
+This repo is a monorepo — the sites live in subfolders, and the repo root has no
+`package.json`. **If you skip the Root Directory setting, the deploy fails.**
+
+Dashboard path:
+
+1. [vercel.com/new](https://vercel.com/new) → Import `TushKum/portfolio`.
+2. Before clicking Deploy, expand the settings and set **Root Directory** to
+   `spatial-portfolio` (use "Edit" next to the root directory field).
+3. Framework Preset should auto-detect **Next.js**; leave build/install commands default.
+4. Deploy. For an existing failing project: Project → Settings → **Build & Deployment** →
+   Root Directory → `spatial-portfolio` → save → Redeploy.
+
+CLI path (no dashboard settings needed):
+
+```bash
+cd spatial-portfolio
+npx vercel --prod   # first run asks you to log in + link a project
+```
+
+The zine site deploys the same way as a **second Vercel project** with Root Directory
+`zine-portfolio`. Remember: Vercel builds what's on GitHub — commit and push before
+redeploying.
 
 ---
 
